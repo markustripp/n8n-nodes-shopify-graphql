@@ -1,4 +1,4 @@
-# n8n-nodes-shopify-graqhql
+# n8n-nodes-shopify-graphql
 
 A custom n8n community node for performing [Shopify GraqhQL Queries](https://shopify.dev/docs/api/admin-graphql) and [bulk operations](https://shopify.dev/docs/api/usage/bulk-operations/queries) directly within your workflows.
 
@@ -109,60 +109,60 @@ Total Execution Time: Fetch, transform, and update 5,242 products → ~12 minute
 
 ![n8n-graphql-editor-query](https://github.com/user-attachments/assets/5a54cd20-1d16-4552-858c-28141c0d8be1)
 
-When building queries, include __typename fields to maintain parent–child relationships when “hierarchy mode” is enabled in n8n. 
+When building queries, include \_\_typename fields to maintain parent–child relationships when “hierarchy mode” is enabled in n8n.
 
 ```graphql
 query VideoBulkProducts {
-  products {
-    edges {
-      node {
-        id
-        handle
-        title
-        totalInventory
-        options {
-          name
-          values
-        }
-        __typename
-        variants {
-          edges {
-            node {
-              id
-              title
-              inventoryQuantity
-              price
-              __typename
-              selectedOptions {
-                name
-                value
-              }
-              metafields {
-                edges {
-                  node {
-                    id
-                    key
-                    value
-                    __typename
-                  }
-                }
-              }
-            }
-          }
-        }
-        metafields {
-          edges {
-            node {
-              id
-              key
-              value
-              __typename
-            }
-          }
-        }
-      }
-    }
-  }
+	products {
+		edges {
+			node {
+				id
+				handle
+				title
+				totalInventory
+				options {
+					name
+					values
+				}
+				__typename
+				variants {
+					edges {
+						node {
+							id
+							title
+							inventoryQuantity
+							price
+							__typename
+							selectedOptions {
+								name
+								value
+							}
+							metafields {
+								edges {
+									node {
+										id
+										key
+										value
+										__typename
+									}
+								}
+							}
+						}
+					}
+				}
+				metafields {
+					edges {
+						node {
+							id
+							key
+							value
+							__typename
+						}
+					}
+				}
+			}
+		}
+	}
 }
 ```
 
@@ -211,7 +211,7 @@ Finally, pass the generated .jsonl data into the Shopify Bulk Mutation node and 
             "quantity": variant.inventoryQuantity + 1
           }
         ]
-      }))) 
+      })))
     }}
   }
 }
