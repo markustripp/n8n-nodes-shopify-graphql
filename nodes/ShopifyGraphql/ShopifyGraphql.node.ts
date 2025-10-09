@@ -14,6 +14,7 @@ export class ShopifyGraphql implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'ShopifyGraphql',
 		name: 'shopifyGraphql',
+		icon: 'file:shopify.svg',
 		group: ['transform'],
 		version: 1,
 		description: 'ShopifyGraphql Description',
