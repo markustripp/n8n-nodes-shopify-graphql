@@ -223,11 +223,11 @@ Before creating the n8n workflow, use the Shopify GraphQL Explorer to test your 
 
 1. Fetching Products:
 
-![n8n-graphql-inventory-query](https://github.com/user-attachments/assets/ca5b014a-328b-40fc-ba70-ec6faa76be0c)
+![n8n-graphql-inventory-query](https://github.com/user-attachments/assets/d1ae5441-79d0-4719-9c8d-e838eeb4a3a4)
 
 2. Updating Products:
 
-![n8n-graphql-inventory-mutation](https://github.com/user-attachments/assets/9efb9aee-4c98-45ff-b9b8-3c30cc39cc54)
+![n8n-graphql-inventory-mutation](https://github.com/user-attachments/assets/651c8b89-d7e7-4068-a01a-570a00b7b096)
 
 ## Resources
 
