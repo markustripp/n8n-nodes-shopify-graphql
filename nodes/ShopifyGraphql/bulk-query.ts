@@ -1,7 +1,9 @@
-import { IDataObject, IExecuteFunctions, INodeExecutionData, jsonParse } from 'n8n-workflow';
-import { fetchShopify, SHOPIFY_BULK_POLL_INTERVAL, getQueryCurrentBulk } from './utils/shopify';
+import type { IDataObject, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
+import { jsonParse } from 'n8n-workflow';
+
+import { flatToTree, type FlatItem } from './utils/json';
 import { nodefetchline } from './utils/nodefetchline';
-import { flatToTree, FlatItem } from './utils/json';
+import { fetchShopify, SHOPIFY_BULK_POLL_INTERVAL, getQueryCurrentBulk } from './utils/shopify';
 
 export const wrapBulkQuery = (query: string) => {
 	return `mutation {
