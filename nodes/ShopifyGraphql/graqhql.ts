@@ -1,4 +1,5 @@
-import { IDataObject, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
+import type { IDataObject, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
+
 import { fetchShopify } from './utils/shopify';
 
 export async function executeGraphql(
@@ -7,14 +8,20 @@ export async function executeGraphql(
 	authentication: string,
 	version: string,
 ): Promise<INodeExecutionData[]> {
-	const graphqlQuery = this.getNodeParameter('graphqlQuery', index) as string;
-	const graphqlVariables = this.getNodeParameter('graphqlVariables', index) as string;
+	const isQuery = this.getNodeParameter('operation', index) === 'query';
+	const query = isQuery 
+		? this.getNodeParameter('graphqlQuery', index) as string 
+		: this.getNodeParameter('graphqlMutation', index) as string;
+	const variables = isQuery 
+		? this.getNodeParameter('graphqlQueryVariables', index) as string 
+		: this.getNodeParameter('graphqlMutationVariables', index) as string;
+
 	const responseData = await fetchShopify.call(
 		this,
 		authentication,
 		version,
-		graphqlQuery,
-		graphqlVariables,
+		query,
+		variables,
 	);
 
 	return this.helpers.constructExecutionMetaData(

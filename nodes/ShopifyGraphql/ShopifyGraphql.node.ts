@@ -53,12 +53,79 @@ export class ShopifyGraphql implements INodeType {
 				default: '2025-07',
 			},
 			{
-				displayName: 'Bulk Operation',
-				name: 'bulk',
-				type: 'boolean',
-				default: false,
-				description:
-					"Whether to use Shopify's bulkOperationRunQuery or bulkOperationRunMutation to asychronously process large data sets without rate limits or pagination/cursors",
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'GraphQL',
+						description:
+							'Standard Shopify GraphQL Query. Please note that there are pagination and rate limits.',
+						value: 'graphql',
+					},
+					{
+						name: 'Bulk',
+						description:
+							"Runs Shopify GraphQL Queries asynchronously as bulk operations on Shopify's servers. No pagination and rate limits.",
+						value: 'bulk',
+					},
+				],
+				default: 'graphql',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['graphql'],
+					},
+				},
+				options: [
+					{
+						name: 'Query',
+						value: 'query',
+						description: 'Shopify GraphQL query to fetch data as JSON',
+						action: 'Query',
+					},
+					{
+						name: 'Mutation',
+						value: 'mutation',
+						description: 'Shopify GraphQL mutation to create, update or delete data',
+						action: 'Mutation',
+					},
+				],
+				default: 'query',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['bulk'],
+					},
+				},
+				options: [
+					{
+						name: 'Bulk Query',
+						value: 'query',
+						description:
+							"Run a Shopify Bulk Query asynchronously on Shopify's servers. No pagination and rate limits.",
+						action: 'Bulk query',
+					},
+					{
+						name: 'Bulk Mutation / Import',
+						value: 'mutation',
+						description:
+							'Combines all inputs into a single bulk mutation and passes it as JSONL file to Shopify for anychronous processing. Update large data sets without rate limits or pagination/cursors.',
+						action: 'Bulk mutation',
+					},
+				],
+				default: 'query',
 			},
 			...graqhqlOperations,
 			...bulkOperations,
@@ -69,9 +136,10 @@ export class ShopifyGraphql implements INodeType {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
-		const bulkMutation =
-			this.getNodeParameter('bulk', 0) &&
-			this.getNodeParameter('bulkOperation', 0) === 'bulkMutation';
+		const resource = this.getNodeParameter('resource', 0);
+		const operation = this.getNodeParameter('operation', 0);
+
+		const bulkMutation = resource === 'bulk' && operation === 'mutation';
 		const bulkMutationJSONL = [];
 
 		for (let i = 0; i < items.length; i++) {
@@ -148,7 +216,7 @@ const graqhqlOperations: INodeProperties[] = [
 		name: 'graphqlQuery',
 		type: 'string',
 		default: `query Products {
-  products(first: 10) {
+  products(first: 2) {
     edges {
       node {
         id
@@ -165,19 +233,67 @@ const graqhqlOperations: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
-				bulk: [false],
+				resource: ['graphql'],
+				operation: ['query'],
 			},
 		},
 	},
 	{
 		displayName: 'Variables',
-		name: 'graphqlVariables',
+		name: 'graphqlQueryVariables',
 		type: 'json',
 		default: '{}',
 		description: 'Query variables as JSON object',
 		displayOptions: {
 			show: {
-				bulk: [false],
+				resource: ['graphql'],
+				operation: ['query'],
+			},
+		},
+	},
+	{
+		displayName: 'Mutation',
+		name: 'graphqlMutation',
+		type: 'string',
+		default: `mutation productUpdate($product: ProductUpdateInput!) {
+  productUpdate(product: $product) {
+    product {
+      id
+      title
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}`,
+		description: 'GraphQL mutation',
+		required: true,
+		typeOptions: {
+			rows: 10,
+		},
+		displayOptions: {
+			show: {
+				resource: ['graphql'],
+				operation: ['mutation'],
+			},
+		},
+	},
+	{
+		displayName: 'Variables',
+		name: 'graphqlMutationVariables',
+		type: 'json',
+		default: `{
+  "product": {
+    "id": "{{ $json.node.id }}",
+    "title": "{{ $json.node.title + 'X' }}"
+  }
+}`,
+		description: 'Query variables as JSON object',
+		displayOptions: {
+			show: {
+				resource: ['graphql'],
+				operation: ['mutation'],
 			},
 		},
 	},
@@ -185,27 +301,28 @@ const graqhqlOperations: INodeProperties[] = [
 
 const bulkOperations: INodeProperties[] = [
 	{
-		displayName: 'Bulk Operation',
-		name: 'bulkOperation',
+		displayName: 'Output',
+		name: 'bulkQueryOutput',
 		type: 'options',
-		default: 'bulkQuery',
+		default: 'flat',
 		options: [
 			{
-				name: 'Bulk Query',
-				value: 'bulkQuery',
+				name: 'Flat',
+				value: 'flat',
 				description:
-					'Run a bulk query without pagination or cursor. It automatically wraps a bulkOperationRunQuery and does not support custom variables.',
+					'By default, Shopify returns the hierarchy as a deconstructed array-like response where children have a __parentId element pointing to their parents',
 			},
 			{
-				name: 'Bulk Mutation / Import',
-				value: 'bulkMutation',
+				name: 'Hierarchy',
+				value: 'tree',
 				description:
-					'It combines all inputs into a single bulk mutation and passes it as JSONL file to Shopify for anychronous processing. It automatically wraps a bulkOperationRunMutation.',
+					'Re-create the hierarchy from the array-like response by moving children to their parents using __parentId and grouping them by __typename',
 			},
 		],
 		displayOptions: {
 			show: {
-				bulk: [true],
+				resource: ['bulk'],
+				operation: ['query'],
 			},
 		},
 	},
@@ -231,34 +348,8 @@ const bulkOperations: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
-				bulk: [true],
-				bulkOperation: ['bulkQuery'],
-			},
-		},
-	},
-	{
-		displayName: 'Output',
-		name: 'bulkQueryOutput',
-		type: 'options',
-		default: 'flat',
-		options: [
-			{
-				name: 'Flat (Raw Shopify JSONL Response)',
-				value: 'flat',
-				description:
-					'By default, Shopify returns the tree hierarchy as a deconstructed array-like response where children have __parentId element pointing to their parents',
-			},
-			{
-				name: 'Tree Hierarchy',
-				value: 'tree',
-				description:
-					'Re-create the tree hierarchy from the array-like response by moving children to their parents using __parentId and grouping them by __typename',
-			},
-		],
-		displayOptions: {
-			show: {
-				bulk: [true],
-				bulkOperation: ['bulkQuery'],
+				resource: ['bulk'],
+				operation: ['query'],
 			},
 		},
 	},
@@ -297,13 +388,13 @@ const bulkOperations: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
-				bulk: [true],
-				bulkOperation: ['bulkMutation'],
+				resource: ['bulk'],
+				operation: ['mutation'],
 			},
 		},
 	},
 	{
-		displayName: 'Bulk Mutation Variables / JSONL',
+		displayName: 'Bulk Mutation Variables',
 		name: 'bulkMutationVariables',
 		type: 'json',
 		default: `{
@@ -315,8 +406,8 @@ const bulkOperations: INodeProperties[] = [
 		description: 'Mutation variables as JSON object',
 		displayOptions: {
 			show: {
-				bulk: [true],
-				bulkOperation: ['bulkMutation'],
+				resource: ['bulk'],
+				operation: ['mutation'],
 			},
 		},
 	},

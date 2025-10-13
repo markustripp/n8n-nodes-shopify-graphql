@@ -1,6 +1,8 @@
-import { IDataObject, IExecuteFunctions, INodeExecutionData, jsonParse } from 'n8n-workflow';
-import { fetchShopify, SHOPIFY_BULK_POLL_INTERVAL, getQueryCurrentBulk } from './utils/shopify';
+import type { IDataObject, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
+import { jsonParse } from 'n8n-workflow';
+
 import { nodefetchline } from './utils/nodefetchline';
+import { fetchShopify, SHOPIFY_BULK_POLL_INTERVAL, getQueryCurrentBulk } from './utils/shopify';
 
 export async function executeBulkMutation(
 	this: IExecuteFunctions,
