@@ -6,7 +6,7 @@ With this node, you can manage any Shopify Admin resource — such as products, 
 
 It also supports Shopify Bulk Operations, allowing you to perform large-scale data operations asynchronously, without worrying about pagination or rate limits.
 
-🎥 Video guide: Check out my YouTube walkthrough explaining the Shopify GraphQL node usage and setup.
+🎥 Video guide: [Check out my YouTube walkthrough explaining the Shopify GraphQL node usage and setup](https://youtu.be/KPnhtPEgV34).
 
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
