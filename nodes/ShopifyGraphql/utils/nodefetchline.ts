@@ -1,29 +1,40 @@
-import http from 'http'
-import https from 'https'
+/**
+ * Convert a ReadableStream to an async iterable iterator
+ */
+async function* streamToIterator(stream: ReadableStream<Uint8Array>): AsyncIterableIterator<Uint8Array> {
+  const reader = stream.getReader()
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      if (value) yield value
+    }
+  } finally {
+    reader.releaseLock()
+  }
+}
 
 const getChunkIteratorNode = async (
   filepath: string
 ): Promise<AsyncIterableIterator<Uint8Array>> => {
-  let h: typeof http | typeof https
   const protocol = new URL(filepath).protocol
-  if (protocol === 'http:') {
-    h = http
-  } else if (protocol === 'https:') {
-    h = https
-  } else {
+  if (protocol !== 'http:' && protocol !== 'https:') {
     throw new Error(
       'Invalid protocol. The URL must start with "http://" or "https://"'
     )
   }
 
-  return await new Promise((resolve, reject) => {
-    h.get(filepath, (res) => {
-      if (res.statusCode !== undefined && res.statusCode >= 400) {
-        reject(new Error(`HTTP Status: ${res.statusCode}`))
-      }
-      resolve(res[Symbol.asyncIterator]())
-    })
-  })
+  const response = await fetch(filepath)
+  
+  if (!response.ok) {
+    throw new Error(`HTTP Status: ${response.status}`)
+  }
+  
+  if (!response.body) {
+    throw new Error('Response body is null')
+  }
+
+  return streamToIterator(response.body)
 }
 
 const escapeRegExp = (s: string): string =>
@@ -54,7 +65,9 @@ export async function* nodefetchline(
 ): AsyncIterableIterator<string> {
   const reader = await getChunkIteratorNode(filepath)
 
-  let { value: chunk, done: readerDone } = await reader.next()
+  let nextResult: IteratorResult<Uint8Array, void> = await reader.next()
+  let chunk: Uint8Array | undefined = nextResult.done ? undefined : nextResult.value
+  let readerDone = nextResult.done
   const decoder = new TextDecoder(encoding)
   let chunkStr = chunk ? decoder.decode(chunk) : ''
 
@@ -79,8 +92,10 @@ export async function* nodefetchline(
         break
       }
       const remainder = chunkStr.substring(startIndex)
-      ;({ value: chunk, done: readerDone } = await reader.next())
-      chunkStr = remainder + (chunkStr ? decoder.decode(chunk) : '')
+      nextResult = await reader.next()
+      chunk = nextResult.done ? undefined : nextResult.value
+      readerDone = nextResult.done
+      chunkStr = remainder + (chunk ? decoder.decode(chunk) : '')
       startIndex = 0
       continue
     }
