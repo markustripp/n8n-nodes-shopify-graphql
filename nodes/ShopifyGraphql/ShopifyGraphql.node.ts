@@ -50,7 +50,7 @@ export class ShopifyGraphql implements INodeType {
 				displayName: 'Shopify API Version',
 				name: 'version',
 				type: 'string',
-				default: '2025-07',
+				default: '2025-10',
 			},
 			{
 				displayName: 'Resource',
