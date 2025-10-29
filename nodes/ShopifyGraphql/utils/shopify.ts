@@ -1,8 +1,8 @@
 import {
+	type IHttpRequestOptions,
 	jsonParse,
 	type IExecuteFunctions,
-	type IHttpRequestOptions,
-	type IOAuth2Options,
+	type IOAuth2Options
 } from 'n8n-workflow';
 
 export const SHOPIFY_BULK_POLL_INTERVAL = 1000;
@@ -45,7 +45,7 @@ export async function fetchShopify(
 		method: 'POST',
 		url,
 		body: JSON.stringify(body),
-		json: true,
+		headers: { 'Content-Type': 'application/json' },
 	};
 
 	if (authentication === 'apiKey') {
@@ -54,7 +54,7 @@ export async function fetchShopify(
 		});
 	}
 
-	return await this.helpers.requestWithAuthentication.call(this, credentialType, options, {
+	return await this.helpers.httpRequestWithAuthentication.call(this, credentialType, options, {
 		oauth2: oAuth2Options,
 	});
 }

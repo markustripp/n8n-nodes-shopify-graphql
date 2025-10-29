@@ -1,5 +1,5 @@
 import type { IDataObject, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
-import { jsonParse } from 'n8n-workflow';
+import { jsonParse, sleep } from 'n8n-workflow';
 
 import { flatToTree, type FlatItem } from './utils/json';
 import { nodefetchline } from './utils/nodefetchline';
@@ -43,7 +43,7 @@ export async function executeBulkQuery(
 		bulkOperation = data.bulkOperation;
 
 		while (bulkOperation.status === 'CREATED' || bulkOperation.status === 'RUNNING') {
-			await new Promise((resolve) => setTimeout(resolve, SHOPIFY_BULK_POLL_INTERVAL));
+			await sleep(SHOPIFY_BULK_POLL_INTERVAL);
 			const bulkStatus = await fetchShopify.call(
 				this,
 				authentication,

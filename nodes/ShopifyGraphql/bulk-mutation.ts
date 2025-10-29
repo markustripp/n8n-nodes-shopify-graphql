@@ -1,5 +1,5 @@
 import type { IDataObject, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
-import { jsonParse } from 'n8n-workflow';
+import { jsonParse, sleep } from 'n8n-workflow';
 
 import { nodefetchline } from './utils/nodefetchline';
 import { fetchShopify, SHOPIFY_BULK_POLL_INTERVAL, getQueryCurrentBulk } from './utils/shopify';
@@ -57,7 +57,7 @@ export async function executeBulkMutation(
 			bulkOperation = bulk.bulkOperation;
 
 			while (bulkOperation.status === 'CREATED' || bulkOperation.status === 'RUNNING') {
-				await new Promise((resolve) => setTimeout(resolve, SHOPIFY_BULK_POLL_INTERVAL));
+				await sleep(SHOPIFY_BULK_POLL_INTERVAL);
 				const jsonBulk = await fetchShopify.call(
 					this,
 					authentication,
