@@ -60,7 +60,7 @@ You can quickly prototype your queries using the [Shopify GraphQL Explorer](http
 
 Once you have a working query, copy the GraphQL code into the Shopify GraphQL node in n8n.
 
-![n8n-graphql-editor](https://github.com/user-attachments/assets/8a0550c4-4057-44e1-b759-0dce139302bb)
+<img width="800" height="559" alt="n8n-shopify-graphql" src="https://github.com/user-attachments/assets/24a4ea89-f96b-462d-b38c-75dace36fb35" />
 
 ### Shopify Bulk Query
 
@@ -72,10 +72,10 @@ Additionally, [rate-limiting](https://shopify.dev/docs/api/usage/limits) applies
 
 This node provides a simple interface to trigger and handle these bulk operations from n8n.
 
-![n8n-graphql-bulk](https://github.com/user-attachments/assets/bf5f4f8e-ca6e-4a64-9bce-661f8906f71c)
+<img width="800" height="559" alt="n8n-shopify-bulk" src="https://github.com/user-attachments/assets/39579020-d31e-4b5a-9d13-05244651b575" />
 
 > [!NOTE]
-> Example: Fetching 5,242 products using a bulk query took only 7 seconds. The result is returned in JSONL format — which is line-delimited JSON — making it easy to handle large datasets efficiently. You can also enable the Hierarchy option to automatically reconstruct parent–child relationships in the result.
+> Fetching 5,000 products using a bulk query took only 7 seconds. The result is returned in JSONL format — which is line-delimited JSON — making it easy to handle large datasets efficiently. You can also enable the Hierarchy option to automatically reconstruct parent–child relationships in the result.
 
 ### Shopify Bulk Mutation
 
@@ -88,7 +88,7 @@ These mutations usually involve:
 3. Executing the mutation referencing the uploaded file
 4. Waiting for Shopify to finalize the bulk job
 
-![n8n-shopify-bulk-mutation](https://github.com/user-attachments/assets/7382a647-af13-4508-bb09-813c3ca2b36f)
+<img width="800" height="559" alt="n8n-shopify-bulk-mutation" src="https://github.com/user-attachments/assets/12f79ad3-744e-476f-9b94-70cc1bdd568c" />
 
 > [!NOTE]
 > Example: You can use Shopify’s productSet mutation to create or update products in bulk depending on whether the ID or handle exists.
@@ -107,7 +107,7 @@ Total Execution Time: Fetch, transform, and update 5,242 products → ~12 minute
 
 #### Step 1: Fetch All Products (Bulk Query)
 
-![n8n-graphql-editor-query](https://github.com/user-attachments/assets/5a54cd20-1d16-4552-858c-28141c0d8be1)
+<img width="800" height="559" alt="n8n-shopify-bulk" src="https://github.com/user-attachments/assets/39579020-d31e-4b5a-9d13-05244651b575" />
 
 When building queries, include \_\_typename fields to maintain parent–child relationships when “hierarchy mode” is enabled in n8n.
 
@@ -170,13 +170,13 @@ query VideoBulkProducts {
 
 Use the bulk mutation option to generate bulk input data:
 
-![n8n-graphql-editor-mutation](https://github.com/user-attachments/assets/66f2d51a-f43d-4700-9695-e172c9460fac)
+<img width="800" height="559" alt="n8n-shopify-bulk-mutation" src="https://github.com/user-attachments/assets/12f79ad3-744e-476f-9b94-70cc1bdd568c" />
 
 #### Step 3: Execute Bulk Mutation in n8n
 
 Finally, pass the generated .jsonl data into the Shopify Bulk Mutation node and execute the workflow to apply updates.
 
-![n8n-graphql-editor-graphql](https://github.com/user-attachments/assets/97d032a4-e424-4da3-aabe-843dce750c73)
+<img width="800" height="483" alt="n8n-shopify-bulk-mutation-variables" src="https://github.com/user-attachments/assets/d2d7ac33-121c-4c10-a651-20253edad894" />
 
 #### Expression:
 
