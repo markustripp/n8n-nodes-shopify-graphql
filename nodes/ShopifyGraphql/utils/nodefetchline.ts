@@ -51,7 +51,7 @@ export async function* nodefetchline(
 	let reader: AsyncIterableIterator<Uint8Array>;
 	try {
 		reader = await getChunkIteratorNode(filepath);
-	} catch (error) {
+	} catch {
 		return;
 	}
 
