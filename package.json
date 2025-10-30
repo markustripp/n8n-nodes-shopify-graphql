@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-shopify-graphql",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"description": "Shopify GraphQL Node for n8n",
 	"license": "MIT",
 	"homepage": "https://github.com/markustripp/n8n-nodes-shopify-graphql",
