@@ -48,7 +48,12 @@ export async function* nodefetchline(
 		delimiter?: string | RegExp;
 	} = {},
 ): AsyncIterableIterator<string> {
-	const reader = await getChunkIteratorNode(filepath);
+	let reader: AsyncIterableIterator<Uint8Array>;
+	try {
+		reader = await getChunkIteratorNode(filepath);
+	} catch (error) {
+		return;
+	}
 
 	let nextResult: IteratorResult<Uint8Array, void> = await reader.next();
 	let chunk: Uint8Array | undefined = nextResult.done ? undefined : nextResult.value;
