@@ -5,7 +5,8 @@
 	"license": "MIT",
 	"homepage": "https://github.com/markustripp/n8n-nodes-shopify-graphql",
 	"keywords": [
-		"n8n-community-node-package"
+		"n8n-community-node-package",
+		"shopify"
 	],
 	"author": {
 		"name": "Markus Tripp",
@@ -13,7 +14,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": ""
+		"url": "https://github.com/markustripp/n8n-nodes-shopify-graphql.git"
 	},
 	"scripts": {
 		"build": "n8n-node build",
