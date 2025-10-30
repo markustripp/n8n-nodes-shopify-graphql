@@ -56,7 +56,7 @@ The GraphQL API is the recommended choice — it gives access to all store data 
 
 You can quickly prototype your queries using the [Shopify GraphQL Explorer](https://shopify.dev/docs/api/usage/api-exploration/admin-graphiql-explorer).
 
-![n8n-graphql-shopify](https://github.com/user-attachments/assets/1eb1b7cb-9169-415c-825f-21ed41936944)
+<img width="1562" height="852" alt="shopify-graphql-explorer" src="https://github.com/user-attachments/assets/0ad834da-5b22-4759-820a-100167fb4f63" />
 
 Once you have a working query, copy the GraphQL code into the Shopify GraphQL node in n8n.
 
@@ -113,56 +113,56 @@ When building queries, include \_\_typename fields to maintain parent–child re
 
 ```graphql
 query VideoBulkProducts {
-	products {
-		edges {
-			node {
-				id
-				handle
-				title
-				totalInventory
-				options {
-					name
-					values
-				}
-				__typename
-				variants {
-					edges {
-						node {
-							id
-							title
-							inventoryQuantity
-							price
-							__typename
-							selectedOptions {
-								name
-								value
-							}
-							metafields {
-								edges {
-									node {
-										id
-										key
-										value
-										__typename
-									}
-								}
-							}
-						}
-					}
-				}
-				metafields {
-					edges {
-						node {
-							id
-							key
-							value
-							__typename
-						}
-					}
-				}
-			}
-		}
-	}
+  products {
+    edges {
+      node {
+        id
+        handle
+        title
+        totalInventory
+        options {
+          name
+          values
+        }
+        __typename
+        variants {
+          edges {
+            node {
+              id
+              title
+              inventoryQuantity
+              price
+              __typename
+              selectedOptions {
+                name
+                value
+              }
+              metafields {
+                edges {
+                  node {
+                    id
+                    key
+                    value
+                    __typename
+                  }
+                }
+              }
+            }
+          }
+        }
+        metafields {
+          edges {
+            node {
+              id
+              key
+              value
+              __typename
+            }
+          }
+        }
+      }
+    }
+  }
 }
 ```
 
